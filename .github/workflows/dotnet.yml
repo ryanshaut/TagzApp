@@ -50,3 +50,26 @@ jobs:
       - run: dotnet build
       - name: Execute Playwright tests
         run: dotnet test --no-build
+  dockerbuild:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Build and push Docker images
+      uses: docker/build-push-action@v4.1.1
+      with:
+        build-contexts: ./src/TagzApp.Web
+        file: Dockerfile
+        no-cache: false # optional, default is false
+        push: true # optional, default is false
+        # Generate SBOM attestation for the build (shorthand for --attest=type=sbom)
+        sbom: true # optional
+        # List of secrets to expose to the build (e.g., key=string, GIT_AUTH_TOKEN=mytoken)
+        tags: ${ACR_HOST}/tagzapp:latest
+    - name: Azure Container Registry Login
+      uses: Azure/docker-login@v1
+      with:
+        # Container registry username
+        username: ${ACR_TOKEN_USER}
+        # Container registry password
+        password: ${ACR_TOKEN_PASSWORD}
+        # Container registry server url
+        login-server: ${ACR_HOST}
