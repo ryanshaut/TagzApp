@@ -64,6 +64,7 @@ jobs:
         sbom: true # optional
         # List of secrets to expose to the build (e.g., key=string, GIT_AUTH_TOKEN=mytoken)
         tags: ${ACR_HOST}/tagzapp:latest
+
     - name: Azure Container Registry Login
       uses: Azure/docker-login@v1
       with:
